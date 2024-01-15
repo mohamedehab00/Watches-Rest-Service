@@ -18,25 +18,29 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class HomeController {
     private final WatchService watchService;
     private final CustomerService customerService;
 
-    @GetMapping("/watch")
+    public static final String WATCH_PATH = "/api/v1/watch";
+    public static final String WATCH_PATH_ID = WATCH_PATH + "/{id}";
+    public static final String CUSTOMER_PATH = "/api/v1/customer";
+    public static final String CUSTOMER_PATH_ID = CUSTOMER_PATH + "/{id}";
+
+    @GetMapping(WATCH_PATH)
     List<Watch> getAllWatches(){
         getLog().debug("Retrieve All Available Watches");
         return this.watchService.listWatches() ;
     }
 
-    @GetMapping("/watch/{id}")
+    @GetMapping(WATCH_PATH_ID)
     Watch getWatchById(@PathVariable UUID id){
         getLog().debug("Retrieve Watch With Id: "+id);
         return this.watchService.getWatchById(id);
     }
 
-    @PostMapping("/watch")
+    @PostMapping(WATCH_PATH)
     ResponseEntity<Watch> addWatch(@RequestBody Watch watch){
         getLog().debug("Adding New Watch : "+watch);
 
@@ -51,7 +55,7 @@ public class HomeController {
         return new ResponseEntity<>(createdWatch, headers, HttpStatus.CREATED);
     }
 
-    @PutMapping("/watch/{id}")
+    @PutMapping(WATCH_PATH_ID)
     ResponseEntity<Watch> updateWatchById(@PathVariable UUID id, @RequestBody Watch watch){
         getLog().debug("Update Watch with Id: " + id);
 
@@ -66,7 +70,7 @@ public class HomeController {
         return new ResponseEntity<>(updatedWatch, headers, HttpStatus.OK);
     }
 
-    @DeleteMapping("/watch/{id}")
+    @DeleteMapping(WATCH_PATH_ID)
     ResponseEntity<Watch> deleteWatchById(@PathVariable UUID id){
         getLog().debug("Delete Watch with Id: " + id);
 
@@ -77,19 +81,19 @@ public class HomeController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/customer")
+    @GetMapping(CUSTOMER_PATH)
     List<Customer> getAllCustomers(){
         getLog().debug("Retrieve All Available Customers");
         return this.customerService.listCustomers();
     }
 
-    @GetMapping("/customer/{id}")
+    @GetMapping(CUSTOMER_PATH_ID)
     Customer getCustomerById(@PathVariable UUID id){
         getLog().debug("Retrieve Customer With Id: "+id);
         return this.customerService.getCustomerById(id);
     }
 
-    @PostMapping("/customer")
+    @PostMapping(CUSTOMER_PATH)
     ResponseEntity<Customer> addCustomer(@RequestBody Customer customer){
         getLog().debug("Adding New Customer : "+customer);
 
@@ -104,7 +108,7 @@ public class HomeController {
         return new ResponseEntity<>(createdCustomer, headers, HttpStatus.CREATED);
     }
 
-    @PutMapping("/customer/{id}")
+    @PutMapping(CUSTOMER_PATH_ID)
     ResponseEntity<Customer> updateCustomerById(@PathVariable UUID id, @RequestBody Customer customer){
         getLog().debug("Update Customer with Id: " + id);
 
@@ -119,7 +123,7 @@ public class HomeController {
         return new ResponseEntity<>(updatedCustomer, headers, HttpStatus.OK);
     }
 
-    @DeleteMapping("/customer/{id}")
+    @DeleteMapping(CUSTOMER_PATH_ID)
     ResponseEntity<Customer> deleteCustomerById(@PathVariable UUID id){
         getLog().debug("Delete Customer with Id: " + id);
 
