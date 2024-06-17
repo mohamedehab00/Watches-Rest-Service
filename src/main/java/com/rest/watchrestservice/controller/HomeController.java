@@ -35,7 +35,7 @@ public class HomeController {
     }
 
     @GetMapping(WATCH_PATH_ID)
-    Watch getWatchById(@PathVariable UUID id){
+    Watch getWatchById(@PathVariable String id){
         getLog().debug("Retrieve Watch With Id: "+id);
         return this.watchService.getWatchById(id);
     }
@@ -59,7 +59,7 @@ public class HomeController {
     ResponseEntity<Watch> updateWatchById(@PathVariable UUID id, @RequestBody Watch watch){
         getLog().debug("Update Watch with Id: " + id);
 
-        Watch updatedWatch = this.watchService.updateById(id,watch);
+        Watch updatedWatch = this.watchService.updateById(id.toString(),watch);
 
         log.debug("Watch Updated : "+updatedWatch);
 
@@ -74,7 +74,7 @@ public class HomeController {
     ResponseEntity<Watch> deleteWatchById(@PathVariable UUID id){
         getLog().debug("Delete Watch with Id: " + id);
 
-        this.watchService.deleteById(id);
+        this.watchService.deleteById(id.toString());
 
         log.debug("Watch Deleted with Id: "+id);
 
@@ -89,8 +89,8 @@ public class HomeController {
 
     @GetMapping(CUSTOMER_PATH_ID)
     Customer getCustomerById(@PathVariable UUID id){
-        getLog().debug("Retrieve Customer With Id: "+id);
-        return this.customerService.getCustomerById(id);
+        getLog().debug("Retrieve Customer With Id: "+id.toString());
+        return this.customerService.getCustomerById(id.toString());
     }
 
     @PostMapping(CUSTOMER_PATH)
@@ -99,7 +99,7 @@ public class HomeController {
 
         Customer createdCustomer = this.customerService.addCustomer(customer);
 
-        log.debug("Customer Created with Id: "+createdCustomer.getId());
+        log.debug("Customer Created with Id: "+createdCustomer.getId().toString());
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -109,7 +109,7 @@ public class HomeController {
     }
 
     @PutMapping(CUSTOMER_PATH_ID)
-    ResponseEntity<Customer> updateCustomerById(@PathVariable UUID id, @RequestBody Customer customer){
+    ResponseEntity<Customer> updateCustomerById(@PathVariable String id, @RequestBody Customer customer){
         getLog().debug("Update Customer with Id: " + id);
 
         Customer updatedCustomer = this.customerService.updateById(id,customer);
@@ -124,7 +124,7 @@ public class HomeController {
     }
 
     @DeleteMapping(CUSTOMER_PATH_ID)
-    ResponseEntity<Customer> deleteCustomerById(@PathVariable UUID id){
+    ResponseEntity<Customer> deleteCustomerById(@PathVariable String id){
         getLog().debug("Delete Customer with Id: " + id);
 
         this.customerService.deleteById(id);

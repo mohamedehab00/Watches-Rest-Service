@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CustomerService {
-    Customer getCustomerById(UUID id);
+    Customer getCustomerById(String id);
 
     List<Customer> listCustomers();
 
     Customer addCustomer(Customer customer);
 
-    Customer updateById(UUID id, Customer customer);
+    Customer updateById(String id, Customer customer);
 
-    void deleteById(UUID id);
+    void deleteById(String id);
 }

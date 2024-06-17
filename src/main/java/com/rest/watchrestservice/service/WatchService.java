@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.UUID;
 
 public interface WatchService {
-    Watch getWatchById(UUID id);
+    Watch getWatchById(String id);
 
     List<Watch> listWatches();
 
     Watch addWatch(Watch watch);
 
-    Watch updateById(UUID id, Watch watch);
+    Watch updateById(String id, Watch watch);
 
-    void deleteById(UUID id);
+    void deleteById(String id);
 }

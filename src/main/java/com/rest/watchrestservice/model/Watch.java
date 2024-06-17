@@ -1,31 +1,34 @@
 package com.rest.watchrestservice.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-//@Entity
-//@Table(name = "watch")
+@Entity
+@Table(name = "watch")
 public class Watch {
-  //  @Id
-  //  @GeneratedValue(strategy = GenerationType.UUID)
-  //  @Column
-    private UUID id;
-    //@Column
+    @Id
+    @UuidGenerator
+    private String id;
+    @Column
     private String model;
-    //@Column
+    @Column
     private String serialNumber;
-    //@Column
+    @Column
     private String origin;
-    //@Column
+    @Column
     private Double price;
-    //@Column
-    private LocalDateTime addedAt;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }
