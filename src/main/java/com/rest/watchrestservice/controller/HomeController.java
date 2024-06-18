@@ -4,7 +4,6 @@ import com.rest.watchrestservice.model.Customer;
 import com.rest.watchrestservice.model.Watch;
 import com.rest.watchrestservice.service.CustomerService;
 import com.rest.watchrestservice.service.WatchService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -99,7 +98,7 @@ public class HomeController {
 
         Customer createdCustomer = this.customerService.addCustomer(customer);
 
-        log.debug("Customer Created with Id: "+createdCustomer.getId().toString());
+        log.debug("Customer Created with Id: "+createdCustomer.getId());
 
         HttpHeaders headers = new HttpHeaders();
 
