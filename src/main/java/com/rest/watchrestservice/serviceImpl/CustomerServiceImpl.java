@@ -1,5 +1,8 @@
 package com.rest.watchrestservice.serviceImpl;
 
+import com.rest.watchrestservice.Mapper;
+import com.rest.watchrestservice.dto.CustomerCreationDto;
+import com.rest.watchrestservice.dto.CustomerDto;
 import com.rest.watchrestservice.model.Customer;
 import com.rest.watchrestservice.repository.CustomerRepository;
 import com.rest.watchrestservice.service.CustomerService;
@@ -11,6 +14,7 @@ import java.util.List;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
+    private Mapper mapper;
     private CustomerRepository repository;
 
     @Autowired
@@ -18,37 +22,45 @@ public class CustomerServiceImpl implements CustomerService {
         this.repository = repository;
     }
 
-    @Override
-    public Customer getCustomerById(String id) {
-        return repository.findById(id).orElseThrow(RuntimeException::new);
+    @Autowired
+    public void setMapper(Mapper mapper) {
+        this.mapper = mapper;
     }
 
     @Override
-    public List<Customer> listCustomers() {
-        return repository.findAll();
+    public CustomerDto getCustomerById(String id) {
+        Customer customer = repository.findById(id).orElseThrow(RuntimeException::new);
+
+        return mapper.customerToCustomerDto(customer);
+    }
+
+    @Override
+    public List<CustomerDto> listCustomers() {
+        return repository.findAll().stream().map(mapper::customerToCustomerDto).toList();
     }
 
     @Override
     @Transactional
-    public Customer addCustomer(Customer customer) {
-        customer = repository.save(customer);
+    public CustomerDto addCustomer(CustomerCreationDto customerCreationDto) {
 
-        return customer;
+        Customer customer = repository.save(mapper.customerCreationDtoToCustomer(customerCreationDto));
+
+        return mapper.customerToCustomerDto(customer);
     }
 
     @Override
     @Transactional
-    public Customer updateById(String id, Customer customer) {
+    public CustomerDto updateById(String id, CustomerCreationDto customerCreationDto) {
         Customer existingCustomer = repository.findById(id).orElseThrow(RuntimeException::new);
 
-        if (customer.getName() != null)
-            existingCustomer.setName(customer.getName());
-        if (customer.getVersion() != 0)
-            existingCustomer.setVersion(customer.getVersion());
+        if (customerCreationDto.getName() != null)
+            existingCustomer.setName(customerCreationDto.getName());
+        if (customerCreationDto.getVersion() != 0)
+            existingCustomer.setVersion(customerCreationDto.getVersion());
 
         existingCustomer = repository.save(existingCustomer);
 
-        return existingCustomer;
+        return mapper.customerToCustomerDto(existingCustomer);
     }
 
     @Override

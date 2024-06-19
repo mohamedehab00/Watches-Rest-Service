@@ -1,18 +1,20 @@
 package com.rest.watchrestservice.service;
 
+import com.rest.watchrestservice.dto.CustomerCreationDto;
+import com.rest.watchrestservice.dto.CustomerDto;
 import com.rest.watchrestservice.model.Customer;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface CustomerService {
-    Customer getCustomerById(String id);
+    CustomerDto getCustomerById(String id);
 
-    List<Customer> listCustomers();
+    List<CustomerDto> listCustomers();
 
-    Customer addCustomer(Customer customer);
+    CustomerDto addCustomer(CustomerCreationDto customer);
 
-    Customer updateById(String id, Customer customer);
+    CustomerDto updateById(String id, CustomerCreationDto customer);
 
     void deleteById(String id);
 }

@@ -1,6 +1,8 @@
 package com.rest.watchrestservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rest.watchrestservice.Mapper;
+import com.rest.watchrestservice.dto.WatchCreationDto;
 import com.rest.watchrestservice.model.Customer;
 import com.rest.watchrestservice.model.Watch;
 import com.rest.watchrestservice.service.CustomerService;
@@ -49,6 +51,8 @@ public class HomeControllerTest {
 
     CustomerServiceImpl customerServiceImpl = new CustomerServiceImpl();
 
+    Mapper mapper = new Mapper();
+
     @Captor
     ArgumentCaptor<UUID> uuidArgumentCaptor;
 
@@ -56,7 +60,7 @@ public class HomeControllerTest {
     void testGetWatchById() throws Exception {
         Watch testWatch = watchServiceImpl.listWatches().getFirst();
 
-        given(watchService.getWatchById(testWatch.getId())).willReturn(testWatch);
+        given(watchService.getWatchById(testWatch.getId())).willReturn(mapper.watchToWatchDto(testWatch));
 
         mockMvc.perform(get(HomeController.WATCH_PATH_ID,testWatch.getId())
                 .accept(MediaType.APPLICATION_JSON))
@@ -73,7 +77,7 @@ public class HomeControllerTest {
     void testListWatches() throws Exception {
         List<Watch> testListWatches = watchServiceImpl.listWatches();
 
-        given(watchService.listWatches()).willReturn(testListWatches);
+        given(watchService.listWatches()).willReturn(testListWatches.stream().map(mapper::watchToWatchDto).toList());
 
         mockMvc.perform(get(HomeController.WATCH_PATH)
                         .accept(MediaType.APPLICATION_JSON))

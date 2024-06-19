@@ -1,7 +1,9 @@
 package com.rest.watchrestservice.controller;
 
-import com.rest.watchrestservice.model.Customer;
-import com.rest.watchrestservice.model.Watch;
+import com.rest.watchrestservice.dto.CustomerCreationDto;
+import com.rest.watchrestservice.dto.CustomerDto;
+import com.rest.watchrestservice.dto.WatchCreationDto;
+import com.rest.watchrestservice.dto.WatchDto;
 import com.rest.watchrestservice.service.CustomerService;
 import com.rest.watchrestservice.service.WatchService;
 import lombok.RequiredArgsConstructor;
@@ -23,27 +25,27 @@ public class HomeController {
     private final CustomerService customerService;
 
     public static final String WATCH_PATH = "/api/v1/watch";
-    public static final String WATCH_PATH_ID = WATCH_PATH + "/{id}";
+    public static final String WATCH_PATH_ID = STR."\{WATCH_PATH}/{id}";
     public static final String CUSTOMER_PATH = "/api/v1/customer";
-    public static final String CUSTOMER_PATH_ID = CUSTOMER_PATH + "/{id}";
+    public static final String CUSTOMER_PATH_ID = STR."\{CUSTOMER_PATH}/{id}";
 
     @GetMapping(WATCH_PATH)
-    List<Watch> getAllWatches(){
+    List<WatchDto> getAllWatches(){
         getLog().debug("Retrieve All Available Watches");
-        return this.watchService.listWatches() ;
+        return this.watchService.listWatches();
     }
 
     @GetMapping(WATCH_PATH_ID)
-    Watch getWatchById(@PathVariable String id){
-        getLog().debug("Retrieve Watch With Id: "+id);
+    WatchDto getWatchById(@PathVariable String id){
+        getLog().debug(STR."Retrieve Watch With Id: \{id}");
         return this.watchService.getWatchById(id);
     }
 
     @PostMapping(WATCH_PATH)
-    ResponseEntity<Watch> addWatch(@RequestBody Watch watch){
-        getLog().debug("Adding New Watch : "+watch);
+    ResponseEntity<WatchDto> addWatch(@RequestBody WatchCreationDto watchCreationDto){
+        getLog().debug("Adding New Watch : "+watchCreationDto);
 
-        Watch createdWatch = this.watchService.addWatch(watch);
+        WatchDto createdWatch = this.watchService.addWatch(watchCreationDto);
 
         log.debug("Watch Created with Id: "+createdWatch.getId());
 
@@ -55,10 +57,10 @@ public class HomeController {
     }
 
     @PutMapping(WATCH_PATH_ID)
-    ResponseEntity<Watch> updateWatchById(@PathVariable UUID id, @RequestBody Watch watch){
+    ResponseEntity<WatchDto> updateWatchById(@PathVariable String id, @RequestBody WatchCreationDto watchCreationDto){
         getLog().debug("Update Watch with Id: " + id);
 
-        Watch updatedWatch = this.watchService.updateById(id.toString(),watch);
+        WatchDto updatedWatch = this.watchService.updateById(id,watchCreationDto);
 
         log.debug("Watch Updated : "+updatedWatch);
 
@@ -70,7 +72,7 @@ public class HomeController {
     }
 
     @DeleteMapping(WATCH_PATH_ID)
-    ResponseEntity<Watch> deleteWatchById(@PathVariable UUID id){
+    ResponseEntity<WatchDto> deleteWatchById(@PathVariable UUID id){
         getLog().debug("Delete Watch with Id: " + id);
 
         this.watchService.deleteById(id.toString());
@@ -81,22 +83,22 @@ public class HomeController {
     }
 
     @GetMapping(CUSTOMER_PATH)
-    List<Customer> getAllCustomers(){
+    List<CustomerDto> getAllCustomers(){
         getLog().debug("Retrieve All Available Customers");
         return this.customerService.listCustomers();
     }
 
     @GetMapping(CUSTOMER_PATH_ID)
-    Customer getCustomerById(@PathVariable UUID id){
-        getLog().debug("Retrieve Customer With Id: "+id.toString());
-        return this.customerService.getCustomerById(id.toString());
+    CustomerDto getCustomerById(@PathVariable String id){
+        getLog().debug("Retrieve Customer With Id: {id}".formatted(id));
+        return this.customerService.getCustomerById(id);
     }
 
     @PostMapping(CUSTOMER_PATH)
-    ResponseEntity<Customer> addCustomer(@RequestBody Customer customer){
-        getLog().debug("Adding New Customer : "+customer);
+    ResponseEntity<CustomerDto> addCustomer(@RequestBody CustomerCreationDto customerCreationDto){
+        getLog().debug("Adding New Customer : "+customerCreationDto);
 
-        Customer createdCustomer = this.customerService.addCustomer(customer);
+        CustomerDto createdCustomer = this.customerService.addCustomer(customerCreationDto);
 
         log.debug("Customer Created with Id: "+createdCustomer.getId());
 
@@ -108,10 +110,10 @@ public class HomeController {
     }
 
     @PutMapping(CUSTOMER_PATH_ID)
-    ResponseEntity<Customer> updateCustomerById(@PathVariable String id, @RequestBody Customer customer){
+    ResponseEntity<CustomerDto> updateCustomerById(@PathVariable String id, @RequestBody CustomerCreationDto customerCreationDto){
         getLog().debug("Update Customer with Id: " + id);
 
-        Customer updatedCustomer = this.customerService.updateById(id,customer);
+        CustomerDto updatedCustomer = this.customerService.updateById(id,customerCreationDto);
 
         log.debug("Customer Updated : "+updatedCustomer);
 
@@ -123,7 +125,7 @@ public class HomeController {
     }
 
     @DeleteMapping(CUSTOMER_PATH_ID)
-    ResponseEntity<Customer> deleteCustomerById(@PathVariable String id){
+    ResponseEntity<CustomerDto> deleteCustomerById(@PathVariable String id){
         getLog().debug("Delete Customer with Id: " + id);
 
         this.customerService.deleteById(id);
