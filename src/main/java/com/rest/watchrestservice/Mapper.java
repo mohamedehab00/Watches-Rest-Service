@@ -18,6 +18,7 @@ public class Mapper {
                 .serialNumber(watch.getSerialNumber())
                 .price(watch.getPrice())
                 .origin(watch.getOrigin())
+                .quantityOnHand(watch.getQuantityOnHand())
                 .build();
     }
 
@@ -29,6 +30,7 @@ public class Mapper {
                 .serialNumber(watchDto.getSerialNumber())
                 .price(watchDto.getPrice())
                 .origin(watchDto.getOrigin())
+                .quantityOnHand(watchDto.getQuantityOnHand())
                 .createdAt(null)
                 .updatedAt(null)
                 .build();
@@ -42,6 +44,7 @@ public class Mapper {
                 .serialNumber(watchCreationDto.getSerialNumber())
                 .price(watchCreationDto.getPrice())
                 .origin(watchCreationDto.getOrigin())
+                .quantityOnHand(watchCreationDto.getQuantityOnHand())
                 .createdAt(null)
                 .updatedAt(null)
                 .build();

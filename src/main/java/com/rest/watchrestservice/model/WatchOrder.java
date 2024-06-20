@@ -6,9 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.type.descriptor.jdbc.BigIntJdbcType;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -18,20 +21,26 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "customer")
-public class Customer {
+@Table(name = "watch_order")
+public class WatchOrder {
     @Id
     @UuidGenerator
     private UUID id;
+
+    @ManyToOne
+    private Customer customer;
+
     @Column
-    private String name;
+    private String customer_ref;
+
+    @OneToMany(mappedBy = "order")
+    private Set<WatchOrderLine> orderLines;
+
     @Column
-    private int version;
+    @JdbcType(BigIntJdbcType.class)
+    private BigInteger version;
     @CreationTimestamp
-    private LocalDateTime addedAt;
+    private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "customer")
-    private Set<WatchOrder> orders;
 }

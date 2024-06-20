@@ -7,6 +7,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -17,7 +19,7 @@ import java.time.LocalDateTime;
 public class Watch {
     @Id
     @UuidGenerator
-    private String id;
+    private UUID id;
     @Column
     private String model;
     @Column
@@ -26,8 +28,13 @@ public class Watch {
     private String origin;
     @Column
     private Double price;
+    @Column(name = "quantity_on_hand")
+    private Integer quantityOnHand;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "watch")
+    private Set<WatchOrderLine> orderLines;
 }

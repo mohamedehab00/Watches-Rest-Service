@@ -9,4 +9,5 @@ public class WatchCreationDto {
     private String serialNumber;
     private String origin;
     private Double price;
+    private Integer quantityOnHand;
 }

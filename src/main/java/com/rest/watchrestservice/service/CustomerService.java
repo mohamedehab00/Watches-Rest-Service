@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CustomerService {
-    CustomerDto getCustomerById(String id);
+    CustomerDto getCustomerById(UUID id);
 
-    List<CustomerDto> listCustomers();
+    List<CustomerDto> listCustomers(String name, Integer version, Integer page, Integer size);
 
     CustomerDto addCustomer(CustomerCreationDto customer);
 
-    CustomerDto updateById(String id, CustomerCreationDto customer);
+    CustomerDto updateById(UUID id, CustomerCreationDto customer);
 
-    void deleteById(String id);
+    void deleteById(UUID id);
 }

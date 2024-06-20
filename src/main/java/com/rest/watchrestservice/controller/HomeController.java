@@ -24,18 +24,24 @@ public class HomeController {
     private final CustomerService customerService;
 
     public static final String WATCH_PATH = "/api/v1/watch";
-    public static final String WATCH_PATH_ID = STR."\{WATCH_PATH}/{id}";
+    public static final String WATCH_PATH_ID = WATCH_PATH + "/{id}";
     public static final String CUSTOMER_PATH = "/api/v1/customer";
-    public static final String CUSTOMER_PATH_ID = STR."\{CUSTOMER_PATH}/{id}";
+    public static final String CUSTOMER_PATH_ID = CUSTOMER_PATH + "/{id}";
 
     @GetMapping(WATCH_PATH)
-    List<WatchDto> getAllWatches(){
+    List<WatchDto> getAllWatches(
+            @RequestParam(required = false) String model,
+            @RequestParam(required = false) String origin,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size
+    ){
         log.debug("Retrieve All Available Watches");
-        return this.watchService.listWatches();
+
+        return this.watchService.listWatches(model, origin, size, page);
     }
 
     @GetMapping(WATCH_PATH_ID)
-    WatchDto getWatchById(@PathVariable String id){
+    WatchDto getWatchById(@PathVariable UUID id){
         log.debug(STR."Retrieve Watch With Id: \{id}");
         return this.watchService.getWatchById(id);
     }
@@ -56,7 +62,7 @@ public class HomeController {
     }
 
     @PutMapping(WATCH_PATH_ID)
-    ResponseEntity<WatchDto> updateWatchById(@PathVariable String id, @RequestBody WatchCreationDto watchCreationDto){
+    ResponseEntity<WatchDto> updateWatchById(@PathVariable UUID id, @RequestBody WatchCreationDto watchCreationDto){
         log.debug(STR."Update Watch with Id: \{id}");
 
         WatchDto updatedWatch = this.watchService.updateById(id,watchCreationDto);
@@ -74,7 +80,7 @@ public class HomeController {
     ResponseEntity<WatchDto> deleteWatchById(@PathVariable UUID id){
         log.debug(STR."Delete Watch with Id: \{id}");
 
-        this.watchService.deleteById(id.toString());
+        this.watchService.deleteById(id);
 
         log.debug(STR."Watch Deleted with Id: \{id}");
 
@@ -82,13 +88,18 @@ public class HomeController {
     }
 
     @GetMapping(CUSTOMER_PATH)
-    List<CustomerDto> getAllCustomers(){
+    List<CustomerDto> getAllCustomers(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Integer version,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size
+    ){
         log.debug("Retrieve All Available Customers");
-        return this.customerService.listCustomers();
+        return this.customerService.listCustomers(name, version, page, size);
     }
 
     @GetMapping(CUSTOMER_PATH_ID)
-    CustomerDto getCustomerById(@PathVariable String id){
+    CustomerDto getCustomerById(@PathVariable UUID id){
         log.debug(STR."Retrieve Customer With Id: \{id}");
         return this.customerService.getCustomerById(id);
     }
@@ -109,7 +120,7 @@ public class HomeController {
     }
 
     @PutMapping(CUSTOMER_PATH_ID)
-    ResponseEntity<CustomerDto> updateCustomerById(@PathVariable String id, @RequestBody CustomerCreationDto customerCreationDto){
+    ResponseEntity<CustomerDto> updateCustomerById(@PathVariable UUID id, @RequestBody CustomerCreationDto customerCreationDto){
         log.debug(STR."Update Customer with Id: \{id}");
 
         CustomerDto updatedCustomer = this.customerService.updateById(id,customerCreationDto);
@@ -124,7 +135,7 @@ public class HomeController {
     }
 
     @DeleteMapping(CUSTOMER_PATH_ID)
-    ResponseEntity<CustomerDto> deleteCustomerById(@PathVariable String id){
+    ResponseEntity<CustomerDto> deleteCustomerById(@PathVariable UUID id){
         log.debug(STR."Delete Customer with Id: \{id}");
 
         this.customerService.deleteById(id);
