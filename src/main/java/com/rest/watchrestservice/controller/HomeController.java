@@ -24,9 +24,9 @@ public class HomeController {
     private final CustomerService customerService;
 
     public static final String WATCH_PATH = "/api/v1/watch";
-    public static final String WATCH_PATH_ID = STR."\{WATCH_PATH}/{id}";
+    public static final String WATCH_PATH_ID = WATCH_PATH + "/{id}";
     public static final String CUSTOMER_PATH = "/api/v1/customer";
-    public static final String CUSTOMER_PATH_ID = STR."\{CUSTOMER_PATH}/{id}";
+    public static final String CUSTOMER_PATH_ID = CUSTOMER_PATH + "/{id}";
 
     @GetMapping(WATCH_PATH)
     List<WatchDto> getAllWatches(){
