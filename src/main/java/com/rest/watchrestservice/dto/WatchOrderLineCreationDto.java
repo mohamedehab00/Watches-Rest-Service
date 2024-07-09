@@ -10,7 +10,6 @@ import java.util.UUID;
 @Data
 public class WatchOrderLineCreationDto {
     private UUID watchId;
-    private UUID watchOrderId;
     private Integer order_quantity;
     private Integer quantity_allocated;
     private BigInteger version;

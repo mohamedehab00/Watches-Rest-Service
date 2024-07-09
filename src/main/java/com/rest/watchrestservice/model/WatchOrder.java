@@ -24,23 +24,25 @@ import java.util.UUID;
 @Table(name = "watch_order")
 public class WatchOrder {
     @Id
-    @UuidGenerator
     private UUID id;
-
-    @ManyToOne
-    private Customer customer;
 
     @Column
     private String customer_ref;
 
-    @OneToMany(mappedBy = "watchOrder")
+    @Column
+    private UUID customer_id;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "watch_order_id")
     private Set<WatchOrderLine> orderLines;
 
     @Column
     @JdbcType(BigIntJdbcType.class)
     private BigInteger version;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
+
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }

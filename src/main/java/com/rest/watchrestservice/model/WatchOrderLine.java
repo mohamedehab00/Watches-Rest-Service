@@ -26,10 +26,10 @@ public class WatchOrderLine {
     @UuidGenerator
     private UUID id;
 
-    @ManyToOne
-    private Watch watch;
-    @ManyToOne
-    private WatchOrder watchOrder;
+    @Column
+    private UUID watch_id;
+    @Column
+    private UUID watch_order_id;
 
     @Column
     private Integer order_quantity;
@@ -38,6 +38,7 @@ public class WatchOrderLine {
     @Column
     @JdbcType(BigIntJdbcType.class)
     private BigInteger version;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp

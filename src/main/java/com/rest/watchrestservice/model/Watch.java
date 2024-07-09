@@ -35,6 +35,7 @@ public class Watch {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "watch")
+    @OneToMany
+    @JoinColumn(name = "watch_id")
     private Set<WatchOrderLine> orderLines;
 }

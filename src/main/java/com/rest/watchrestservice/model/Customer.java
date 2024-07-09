@@ -32,6 +32,7 @@ public class Customer {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany
+    @JoinColumn(name = "customer_id")
     private Set<WatchOrder> orders;
 }

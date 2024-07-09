@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -58,15 +59,18 @@ public class OrderServiceImpl implements OrderService {
             throw new ElementNotFoundException(STR."Customer with id: \{orderCreationDto.getCustomerId()} is not found");
         }
 
-        createdOrder = createdOrder.customer(currentCustomer.get())
-                        .version(orderCreationDto.getVersion())
-                        .customer_ref(orderCreationDto.getCustomerRef());
-
-        Set<WatchOrderLine> orderLines = new HashSet<>();
+        UUID createdOrderId = watchOrderRepository.getNextIdValue();
 
         WatchOrder readyCreatedOrder = createdOrder
-                .orderLines(orderLines)
+                .id(createdOrderId)
+                .customer_id(currentCustomer.get().getId())
+                .version(orderCreationDto.getVersion())
+                .customer_ref(orderCreationDto.getCustomerRef())
                 .build();
+
+        readyCreatedOrder = watchOrderRepository.save(readyCreatedOrder);
+
+        Set<WatchOrderLine> orderLines = new HashSet<>();
 
         for (WatchOrderLineCreationDto dto : orderCreationDto.getOrderLines()){
             Optional<Watch> watch = watchRepository.findById(dto.getWatchId());
@@ -76,8 +80,8 @@ public class OrderServiceImpl implements OrderService {
             }
 
             WatchOrderLine orderLine = WatchOrderLine.builder()
-                    .watchOrder(readyCreatedOrder)
-                    .watch(watch.get())
+                    .watch_order_id(createdOrderId)
+                    .watch_id(watch.get().getId())
                     .order_quantity(dto.getOrder_quantity())
                     .quantity_allocated(dto.getQuantity_allocated())
                     .version(dto.getVersion())
@@ -95,6 +99,8 @@ public class OrderServiceImpl implements OrderService {
 
             orderLines.add(orderLine);
         }
+
+        readyCreatedOrder.setOrderLines(orderLines);
 
         readyCreatedOrder = watchOrderRepository.save(readyCreatedOrder);
 
