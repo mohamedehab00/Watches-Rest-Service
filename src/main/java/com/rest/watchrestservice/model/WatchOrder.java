@@ -33,7 +33,7 @@ public class WatchOrder {
     @Column
     private String customer_ref;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "watchOrder")
     private Set<WatchOrderLine> orderLines;
 
     @Column

@@ -28,9 +28,8 @@ public class WatchOrderLine {
 
     @ManyToOne
     private Watch watch;
-
     @ManyToOne
-    private WatchOrder order;
+    private WatchOrder watchOrder;
 
     @Column
     private Integer order_quantity;

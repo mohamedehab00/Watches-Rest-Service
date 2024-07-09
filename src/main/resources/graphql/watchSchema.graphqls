@@ -1,0 +1,13 @@
+type Watch {
+    id: ID!
+    model: String
+    serialNumber: String
+    origin: String
+    price: Float
+    quantityOnHand: Int
+}
+
+type Query {
+    getAllWatches: [Watch]!
+    getWatchById(id: ID): Watch
+}
