@@ -14,4 +14,5 @@ public class WatchOrderCreationDto {
     private String customerRef;
     private Set<WatchOrderLineCreationDto> orderLines;
     private BigInteger version;
+    private WatchOrderShipmentCreationDto shipment;
 }

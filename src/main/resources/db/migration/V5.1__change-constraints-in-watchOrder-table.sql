@@ -1,0 +1,2 @@
+ALTER TABLE watch_order
+    MODIFY COLUMN customer_id BINARY(16) DEFAULT NULL;

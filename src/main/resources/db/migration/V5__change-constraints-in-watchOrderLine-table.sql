@@ -1,0 +1,3 @@
+ALTER TABLE watch_order_line
+    MODIFY COLUMN watch_order_id BINARY(16) DEFAULT NULL,
+    MODIFY COLUMN watch_id BINARY(16) DEFAULT NULL;

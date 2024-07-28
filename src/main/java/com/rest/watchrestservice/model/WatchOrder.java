@@ -45,4 +45,8 @@ public class WatchOrder {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "watch_order_shipment_id")
+    private WatchOrderShipment orderShipment;
 }

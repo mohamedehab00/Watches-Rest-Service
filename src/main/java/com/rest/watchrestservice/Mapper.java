@@ -1,12 +1,14 @@
 package com.rest.watchrestservice;
 
-import com.rest.watchrestservice.dto.CustomerCreationDto;
-import com.rest.watchrestservice.dto.CustomerDto;
-import com.rest.watchrestservice.dto.WatchCreationDto;
-import com.rest.watchrestservice.dto.WatchDto;
+import com.rest.watchrestservice.dto.*;
+import com.rest.watchrestservice.model.Category;
 import com.rest.watchrestservice.model.Customer;
 import com.rest.watchrestservice.model.Watch;
+import com.rest.watchrestservice.model.WatchOrderShipment;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 @Component
 public class Mapper {
@@ -19,6 +21,8 @@ public class Mapper {
                 .price(watch.getPrice())
                 .origin(watch.getOrigin())
                 .quantityOnHand(watch.getQuantityOnHand())
+                .orderLines((watch.getOrderLines() != null) ? watch.getOrderLines() : new HashSet<>())
+                .categories((watch.getCategories() != null) ? watch.getCategories() : new HashSet<>())
                 .build();
     }
 
@@ -45,6 +49,7 @@ public class Mapper {
                 .price(watchCreationDto.getPrice())
                 .origin(watchCreationDto.getOrigin())
                 .quantityOnHand(watchCreationDto.getQuantityOnHand())
+                .Categories(watchCreationDto.getCategories().stream().map(uuid -> Category.builder().id(uuid).build()).collect(Collectors.toSet()))
                 .createdAt(null)
                 .updatedAt(null)
                 .build();
@@ -56,6 +61,8 @@ public class Mapper {
                 .id(customer.getId())
                 .name(customer.getName())
                 .version(customer.getVersion())
+                .orders(customer.getOrders())
+                .orders(customer.getOrders())
                 .build();
     }
 
@@ -78,6 +85,44 @@ public class Mapper {
                 .version(customerCreationDto.getVersion())
                 .addedAt(null)
                 .updatedAt(null)
+                .build();
+    }
+
+    public Category categoryCreationDtoToCategory(CategoryCreationDto dto){
+        return Category
+                .builder()
+                .id(null)
+                .description(dto.getDescription())
+                .version(dto.getVersion())
+                .created_at(null)
+                .updated_at(null)
+                .build();
+    }
+
+    public CategoryDto categoryToCategoryDto(Category category){
+        return CategoryDto
+                .builder()
+                .id(category.getId())
+                .description(category.getDescription())
+                .version(category.getVersion())
+                .build();
+    }
+
+    public WatchOrderShipment watchOrderShipmentCreationDtoToWatchOrderShipment(WatchOrderShipmentCreationDto dto){
+        return WatchOrderShipment.builder()
+                .id(null)
+                .tracking_number(dto.getTracking_number())
+                .version(dto.getVersion())
+                .createdAt(null)
+                .updatedAt(null)
+                .build();
+    }
+
+    public WatchOrderShipmentDto watchOrderShipmentToWatchOrderShipmentDto(WatchOrderShipment dto){
+        return WatchOrderShipmentDto.builder()
+                .id(dto.getId())
+                .tracking_number(dto.getTracking_number())
+                .version(dto.getVersion())
                 .build();
     }
 }

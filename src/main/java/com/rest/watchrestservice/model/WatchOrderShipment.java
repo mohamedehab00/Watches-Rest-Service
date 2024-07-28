@@ -1,38 +1,37 @@
 package com.rest.watchrestservice.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.UUID;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Entity
-@Table(name = "customer")
-public class Customer {
+public class WatchOrderShipment {
     @Id
     @UuidGenerator
     private UUID id;
+
     @Column
-    private String name;
+    private String tracking_number;
+
     @Column
     private int version;
+
     @CreationTimestamp
-    private LocalDateTime addedAt;
+    private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-    
-    @OneToMany(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "customer_id")
-    private Set<WatchOrder> orders;
 }

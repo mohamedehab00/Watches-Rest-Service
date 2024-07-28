@@ -7,9 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -25,5 +26,26 @@ public class OrdersController {
         WatchOrder order = orderService.createOrder(orderCreationDto);
 
         return new ResponseEntity<>(order, HttpStatus.CREATED);
+    }
+
+    @GetMapping(ORDER_PATH_ID)
+    public ResponseEntity<WatchOrder> getWatchOrderById(@PathVariable UUID id){
+        WatchOrder order = orderService.retrieveOrderById(id);
+
+        return new ResponseEntity<>(order, HttpStatus.OK);
+    }
+
+    @GetMapping(ORDER_PATH)
+    public ResponseEntity<List<WatchOrder>> getWatchOrders(){
+        List<WatchOrder> orders = orderService.getAllOrders();
+
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
+
+    @DeleteMapping(ORDER_PATH_ID)
+    public ResponseEntity deleteWatchOrderById(@PathVariable UUID id){
+        orderService.deleteOrderById(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -2,6 +2,7 @@ package com.rest.watchrestservice.controller;
 
 import com.rest.watchrestservice.dto.CustomerCreationDto;
 import com.rest.watchrestservice.dto.CustomerDto;
+import com.rest.watchrestservice.model.Customer;
 import com.rest.watchrestservice.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -2,13 +2,18 @@ package com.rest.watchrestservice.serviceImpl;
 
 import com.rest.watchrestservice.Mapper;
 import com.rest.watchrestservice.UtilClass;
+import com.rest.watchrestservice.dto.CategoryCreationDto;
+import com.rest.watchrestservice.dto.CategoryDto;
 import com.rest.watchrestservice.dto.WatchCreationDto;
 import com.rest.watchrestservice.dto.WatchDto;
 import com.rest.watchrestservice.exceptions.ElementNotFoundException;
+import com.rest.watchrestservice.model.Category;
 import com.rest.watchrestservice.model.Watch;
+import com.rest.watchrestservice.repository.CategoryRepository;
 import com.rest.watchrestservice.repository.WatchRepository;
 import com.rest.watchrestservice.service.WatchService;
 import jakarta.transaction.Transactional;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,19 +23,25 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
+@Data
 @Service
 public class WatchServiceImpl implements WatchService {
-    private WatchRepository repository;
+    private WatchRepository watchRepository;
+    private CategoryRepository categoryRepository;
+
     private Mapper mapper;
 
     @Autowired
-    public void setRepository(WatchRepository repository) {
-        this.repository = repository;
+    public void setWatchRepository(WatchRepository repository) {
+        this.watchRepository = repository;
+    }
+
+    @Autowired
+    public void setCategoryRepository(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
     }
 
     @Autowired
@@ -40,7 +51,7 @@ public class WatchServiceImpl implements WatchService {
 
     @Override
     public WatchDto getWatchById(UUID id) {
-        Optional<Watch> optionalExistingWatch = repository.findById(id);
+        Optional<Watch> optionalExistingWatch = getWatchRepository().findById(id);
 
         if (optionalExistingWatch.isEmpty()){
             throw new ElementNotFoundException(STR."Watch with id: \{id} is not found");
@@ -48,31 +59,31 @@ public class WatchServiceImpl implements WatchService {
 
         Watch watch = optionalExistingWatch.get();
 
-        return mapper.watchToWatchDto(watch);
+        return getMapper().watchToWatchDto(watch);
     }
 
     @Override
     public List<WatchDto> listWatches(String model, String origin, Integer size, Integer page) {
         Page<Watch> watches;
 
-        PageRequest pageRequest = UtilClass.buildPageRequest(size, page);
+        PageRequest pageRequest = UtilClass.buildPageRequest(size, page, Sort.by(Sort.Order.asc("model")));
 
         if (StringUtils.hasText(model) && StringUtils.hasText(origin)){
-            watches = repository.findWatchesByModelLikeAndOriginLike(STR."%\{model}%",STR."%\{origin}%", pageRequest);
+            watches = getWatchRepository().findWatchesByModelLikeAndOriginLike(STR."%\{model}%",STR."%\{origin}%", pageRequest);
 
-            return new PageImpl<>(watches.stream().map(mapper::watchToWatchDto).toList()).getContent();
+            return new PageImpl<>(watches.stream().map(getMapper()::watchToWatchDto).toList()).getContent();
         } else if (StringUtils.hasText(model)) {
-            watches = repository.findWatchesByModelLike(STR."%\{model}%", pageRequest);
+            watches = getWatchRepository().findWatchesByModelLike(STR."%\{model}%", pageRequest);
 
-            return new PageImpl<>(watches.stream().map(mapper::watchToWatchDto).toList()).getContent();
+            return new PageImpl<>(watches.stream().map(getMapper()::watchToWatchDto).toList()).getContent();
         } else if (StringUtils.hasText(origin)) {
-            watches = repository.findWatchesByOriginLike(STR."%\{origin}%", pageRequest);
+            watches = getWatchRepository().findWatchesByOriginLike(STR."%\{origin}%", pageRequest);
 
-            return new PageImpl<>(watches.stream().map(mapper::watchToWatchDto).toList()).getContent();
+            return new PageImpl<>(watches.stream().map(getMapper()::watchToWatchDto).toList()).getContent();
         } else {
-            watches = repository.findAll(pageRequest);
+            watches = getWatchRepository().findAll(pageRequest);
 
-            return new PageImpl<>(watches.stream().map(mapper::watchToWatchDto).toList()).getContent();
+            return new PageImpl<>(watches.stream().map(getMapper()::watchToWatchDto).toList()).getContent();
         }
     }
 
@@ -80,15 +91,28 @@ public class WatchServiceImpl implements WatchService {
     @Transactional
     public WatchDto addWatch(WatchCreationDto watchCreationDto) {
 
-        Watch createdWatch = repository.save(mapper.watchCreationDtoToWatch(watchCreationDto));
+        Watch createdWatch = getMapper().watchCreationDtoToWatch(watchCreationDto);
 
-        return mapper.watchToWatchDto(createdWatch);
+        Set<Category> categorySet = createdWatch.getCategories();
+        Set<Category> validCategorySet = new HashSet<>();
+
+        for (Category c : categorySet){
+            Optional<Category> currCategory = getCategoryRepository().findById(c.getId());
+
+            currCategory.ifPresent(validCategorySet::add);
+        }
+
+        createdWatch.setCategories(validCategorySet);
+
+        createdWatch = getWatchRepository().save(createdWatch);
+
+        return getMapper().watchToWatchDto(createdWatch);
     }
 
     @Override
     @Transactional
     public WatchDto updateById(UUID id, WatchCreationDto watch) {
-        Optional<Watch> optionalExistingWatch = repository.findById(id);
+        Optional<Watch> optionalExistingWatch = getWatchRepository().findById(id);
 
         if (optionalExistingWatch.isEmpty()){
             throw new ElementNotFoundException(STR."Watch with id: \{id} is not found");
@@ -107,13 +131,27 @@ public class WatchServiceImpl implements WatchService {
         if (watch.getQuantityOnHand() != null)
             existingWatch.setQuantityOnHand(watch.getQuantityOnHand());
 
-        existingWatch = repository.save(existingWatch);
+        existingWatch = getWatchRepository().save(existingWatch);
 
-        return mapper.watchToWatchDto(existingWatch);
+        return getMapper().watchToWatchDto(existingWatch);
     }
 
     @Override
     public void deleteById(UUID id) {
-        repository.deleteById(id);
+        getWatchRepository().deleteById(id);
+    }
+
+    @Override
+    public CategoryDto addCategory(CategoryCreationDto dto) {
+        Category createdCategory = getMapper().categoryCreationDtoToCategory(dto);
+
+        createdCategory = getCategoryRepository().save(createdCategory);
+
+        return getMapper().categoryToCategoryDto(createdCategory);
+    }
+
+    @Override
+    public List<CategoryDto> getAllWatchCategories() {
+        return getCategoryRepository().findAll().stream().map(getMapper()::categoryToCategoryDto).toList();
     }
 }

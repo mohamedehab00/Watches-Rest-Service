@@ -1,7 +1,10 @@
 package com.rest.watchrestservice.controller;
 
+import com.rest.watchrestservice.dto.CategoryCreationDto;
+import com.rest.watchrestservice.dto.CategoryDto;
 import com.rest.watchrestservice.dto.WatchCreationDto;
 import com.rest.watchrestservice.dto.WatchDto;
+import com.rest.watchrestservice.model.Category;
 import com.rest.watchrestservice.service.WatchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +23,8 @@ public class WatchController {
     private final WatchService watchService;
     public static final String WATCH_PATH = "/api/v1/watch";
     public static final String WATCH_PATH_ID = WATCH_PATH + "/{id}";
+
+    public static final String WATCH_CATEGORIES_PATH = WATCH_PATH + "/categories";
 
     @GetMapping(WATCH_PATH)
     List<WatchDto> getAllWatches(
@@ -78,5 +83,17 @@ public class WatchController {
         log.debug(STR."Watch Deleted with Id: \{id}");
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(WATCH_CATEGORIES_PATH)
+    ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryCreationDto dto){
+        CategoryDto category = watchService.addCategory(dto);
+
+        return new ResponseEntity<>(category,HttpStatus.CREATED);
+    }
+
+    @GetMapping(WATCH_CATEGORIES_PATH)
+    List<CategoryDto> getAllCategories(){
+        return watchService.getAllWatchCategories();
     }
 }

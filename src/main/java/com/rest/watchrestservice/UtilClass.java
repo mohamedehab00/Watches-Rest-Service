@@ -7,7 +7,7 @@ public class UtilClass {
     private static final int DEFAULT_PAGE = 0;
     private static final int DEFAULT_PAGE_SIZE = 25;
 
-    public static PageRequest buildPageRequest(Integer pageSize, Integer pageNumber){
+    public static PageRequest buildPageRequest(Integer pageSize, Integer pageNumber, Sort sort){
         int processedPageSize;
         int processedPageNumber;
 
@@ -29,8 +29,6 @@ public class UtilClass {
         else {
             processedPageNumber = DEFAULT_PAGE;
         }
-
-        Sort sort = Sort.by(Sort.Order.asc("model"));
 
         return PageRequest.of(processedPageNumber,processedPageSize, sort);
     }

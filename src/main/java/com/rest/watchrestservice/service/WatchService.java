@@ -1,5 +1,7 @@
 package com.rest.watchrestservice.service;
 
+import com.rest.watchrestservice.dto.CategoryCreationDto;
+import com.rest.watchrestservice.dto.CategoryDto;
 import com.rest.watchrestservice.dto.WatchCreationDto;
 import com.rest.watchrestservice.dto.WatchDto;
 import org.springframework.data.domain.Page;
@@ -17,4 +19,9 @@ public interface WatchService {
     WatchDto updateById(UUID id, WatchCreationDto watch);
 
     void deleteById(UUID id);
+
+    List<CategoryDto> getAllWatchCategories();
+
+    CategoryDto addCategory(CategoryCreationDto dto);
+
 }

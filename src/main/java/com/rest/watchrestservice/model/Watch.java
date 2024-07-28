@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -38,4 +39,13 @@ public class Watch {
     @OneToMany
     @JoinColumn(name = "watch_id")
     private Set<WatchOrderLine> orderLines;
+
+    @Builder.Default
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "watch_category",
+            joinColumns = @JoinColumn(name = "watch_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id")
+    )
+    private Set<Category> Categories = new HashSet<>();
 }

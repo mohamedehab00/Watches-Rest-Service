@@ -51,7 +51,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerDto> listCustomers(String name, Integer version, Integer page, Integer size) {
-        PageRequest pageRequest = UtilClass.buildPageRequest(size, page);
+        PageRequest pageRequest = UtilClass.buildPageRequest(size, page, Sort.by(Sort.Order.asc("name")));
 
         Page<Customer> customers;
 
