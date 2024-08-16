@@ -12,6 +12,5 @@ import java.util.UUID;
 public interface WatchRepository extends JpaRepository<Watch, UUID> {
     Page<Watch> findWatchesByOriginLike(String origin, Pageable pageable);
     Page<Watch> findWatchesByModelLike(String model, Pageable pageable);
-
     Page<Watch> findWatchesByModelLikeAndOriginLike(String model, String origin, Pageable pageable);
 }
