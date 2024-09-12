@@ -4,7 +4,6 @@ import com.rest.watchrestservice.dto.CategoryCreationDto;
 import com.rest.watchrestservice.dto.CategoryDto;
 import com.rest.watchrestservice.dto.WatchCreationDto;
 import com.rest.watchrestservice.dto.WatchDto;
-import com.rest.watchrestservice.model.Category;
 import com.rest.watchrestservice.service.WatchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +34,7 @@ public class WatchController {
     ){
         log.debug("Retrieve All Available Watches");
 
-        return this.watchService.listWatches(model, origin, size, page);
+        return this.watchService.getAllWatches(model, origin, size, page);
     }
 
     @GetMapping(WATCH_PATH_ID)

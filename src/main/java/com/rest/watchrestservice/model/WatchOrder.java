@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.descriptor.jdbc.BigIntJdbcType;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,9 +32,10 @@ public class WatchOrder {
     @Column
     private UUID customer_id;
 
+    @Builder.Default
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "watch_order_id")
-    private Set<WatchOrderLine> orderLines;
+    private Set<WatchOrderLine> orderLines = new HashSet<>();
 
     @Column
     @JdbcType(BigIntJdbcType.class)

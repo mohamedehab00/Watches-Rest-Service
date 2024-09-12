@@ -30,6 +30,7 @@ import java.util.*;
 @Service
 public class WatchServiceImpl implements WatchService {
     private WatchRepository watchRepository;
+
     private CategoryRepository categoryRepository;
 
     private Mapper mapper;
@@ -63,7 +64,7 @@ public class WatchServiceImpl implements WatchService {
     }
 
     @Override
-    public List<WatchDto> listWatches(String model, String origin, Integer size, Integer page) {
+    public List<WatchDto> getAllWatches(String model, String origin, Integer size, Integer page) {
         Page<Watch> watches;
 
         PageRequest pageRequest = UtilClass.buildPageRequest(size, page, Sort.by(Sort.Order.asc("model")));
@@ -152,6 +153,8 @@ public class WatchServiceImpl implements WatchService {
 
     @Override
     public List<CategoryDto> getAllWatchCategories() {
-        return getCategoryRepository().findAll().stream().map(getMapper()::categoryToCategoryDto).toList();
+        List<Category> categories = getCategoryRepository().findAll();
+        List<CategoryDto> categoryDtos = categories.stream().map(getMapper()::categoryToCategoryDto).toList();
+        return categoryDtos;
     }
 }

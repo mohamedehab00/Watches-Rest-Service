@@ -10,7 +10,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -26,13 +27,14 @@ public class Customer {
     @Column
     private String name;
     @Column
-    private int version;
+    private Integer version;
     @CreationTimestamp
     private LocalDateTime addedAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-    
+
+    @Builder.Default
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "customer_id")
-    private Set<WatchOrder> orders;
+    private List<WatchOrder> orders = new ArrayList<>();
 }

@@ -1,7 +1,7 @@
 package com.rest.watchrestservice.controller;
 
 import com.rest.watchrestservice.dto.WatchOrderCreationDto;
-import com.rest.watchrestservice.model.WatchOrder;
+import com.rest.watchrestservice.dto.WatchOrderDto;
 import com.rest.watchrestservice.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,22 +22,22 @@ public class OrdersController {
     private final OrderService orderService;
 
     @PostMapping(ORDER_PATH)
-    public ResponseEntity<WatchOrder> createWatchOrder(@RequestBody WatchOrderCreationDto orderCreationDto){
-        WatchOrder order = orderService.createOrder(orderCreationDto);
+    public ResponseEntity<WatchOrderDto> createWatchOrder(@RequestBody WatchOrderCreationDto orderCreationDto){
+        WatchOrderDto order = orderService.createOrder(orderCreationDto);
 
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 
     @GetMapping(ORDER_PATH_ID)
-    public ResponseEntity<WatchOrder> getWatchOrderById(@PathVariable UUID id){
-        WatchOrder order = orderService.retrieveOrderById(id);
+    public ResponseEntity<WatchOrderDto> getWatchOrderById(@PathVariable UUID id){
+        WatchOrderDto order = orderService.retrieveOrderById(id);
 
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
     @GetMapping(ORDER_PATH)
-    public ResponseEntity<List<WatchOrder>> getWatchOrders(){
-        List<WatchOrder> orders = orderService.getAllOrders();
+    public ResponseEntity<List<WatchOrderDto>> getWatchOrders(){
+        List<WatchOrderDto> orders = orderService.getAllOrders();
 
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }

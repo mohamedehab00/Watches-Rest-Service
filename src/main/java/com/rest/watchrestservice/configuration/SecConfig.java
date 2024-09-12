@@ -8,6 +8,13 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecConfig {
+    /*@Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+        http.httpBasic(Customizer.withDefaults());
+
+        return http.build();
+    }
+*/
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
@@ -20,4 +27,6 @@ public class SecConfig {
 
         return http.build();
     }
+
+
 }

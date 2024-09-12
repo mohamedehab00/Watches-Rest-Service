@@ -10,5 +10,5 @@ import java.util.UUID;
 public class WatchOrderShipmentDto {
     private UUID id;
     private String tracking_number;
-    private int version;
+    private WatchOrderInfoDto order;
 }

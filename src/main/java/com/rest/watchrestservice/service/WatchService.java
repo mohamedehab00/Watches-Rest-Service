@@ -4,7 +4,6 @@ import com.rest.watchrestservice.dto.CategoryCreationDto;
 import com.rest.watchrestservice.dto.CategoryDto;
 import com.rest.watchrestservice.dto.WatchCreationDto;
 import com.rest.watchrestservice.dto.WatchDto;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,7 +11,7 @@ import java.util.UUID;
 public interface WatchService {
     WatchDto getWatchById(UUID id);
 
-    List<WatchDto> listWatches(String model, String origin, Integer pageSize, Integer pageNumber);
+    List<WatchDto> getAllWatches(String model, String origin, Integer pageSize, Integer pageNumber);
 
     WatchDto addWatch(WatchCreationDto watch);
 

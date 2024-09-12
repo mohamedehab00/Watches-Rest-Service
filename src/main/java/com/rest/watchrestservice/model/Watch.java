@@ -1,7 +1,10 @@
 package com.rest.watchrestservice.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
@@ -36,16 +39,21 @@ public class Watch {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @Builder.Default
     @OneToMany
     @JoinColumn(name = "watch_id")
-    private Set<WatchOrderLine> orderLines;
+    private Set<WatchOrderLine> orderLines = new HashSet<>();
 
     @Builder.Default
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(
+            fetch = FetchType.EAGER,
+            cascade = {
+            CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH
+    })
     @JoinTable(
             name = "watch_category",
             joinColumns = @JoinColumn(name = "watch_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id")
     )
-    private Set<Category> Categories = new HashSet<>();
+    private Set<Category> categories = new HashSet<>();
 }

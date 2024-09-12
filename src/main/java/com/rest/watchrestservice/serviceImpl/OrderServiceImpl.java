@@ -2,6 +2,7 @@ package com.rest.watchrestservice.serviceImpl;
 
 import com.rest.watchrestservice.Mapper;
 import com.rest.watchrestservice.dto.WatchOrderCreationDto;
+import com.rest.watchrestservice.dto.WatchOrderDto;
 import com.rest.watchrestservice.dto.WatchOrderLineCreationDto;
 import com.rest.watchrestservice.exceptions.ElementNotFoundException;
 import com.rest.watchrestservice.model.*;
@@ -47,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public WatchOrder createOrder(WatchOrderCreationDto orderCreationDto) {
+    public WatchOrderDto createOrder(WatchOrderCreationDto orderCreationDto) {
         WatchOrder.WatchOrderBuilder createdOrder = WatchOrder.builder();
 
         Optional<Customer> currentCustomer = getCustomerRepository().findById(orderCreationDto.getCustomerId());
@@ -103,18 +104,18 @@ public class OrderServiceImpl implements OrderService {
 
         readyCreatedOrder = getWatchOrderRepository().save(readyCreatedOrder);
 
-        return readyCreatedOrder;
+        return getMapper().watchOrderToWatchOrderDto(readyCreatedOrder);
     }
 
     @Override
-    public WatchOrder retrieveOrderById(UUID id) {
+    public WatchOrderDto retrieveOrderById(UUID id) {
         Optional<WatchOrder> order = getWatchOrderRepository().findById(id);
 
         if (order.isEmpty()){
             throw new ElementNotFoundException(STR."Order with id: \{id} is not found");
         }
 
-        return order.get();
+        return mapper.watchOrderToWatchOrderDto(order.get());
     }
 
     @Override
@@ -123,7 +124,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<WatchOrder> getAllOrders() {
-        return getWatchOrderRepository().findAll();
+    public List<WatchOrderDto> getAllOrders() {
+        return getWatchOrderRepository().findAll().stream().map(getMapper()::watchOrderToWatchOrderDto).toList();
     }
 }

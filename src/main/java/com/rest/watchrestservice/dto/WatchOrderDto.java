@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -12,13 +13,14 @@ import java.util.UUID;
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class WatchDto {
+public class WatchOrderDto {
     private UUID id;
-    private String model;
-    private String serialNumber;
-    private String origin;
-    private Double price;
-    private Integer quantityOnHand;
+
+    private UUID customer_id;
+
     private Set<WatchOrderLineDto> orderLines;
-    private Set<CategoryInfoDto> categories;
+
+    private LocalDateTime updatedAt;
+
+    private WatchOrderShipmentInfoDto orderShipment;
 }

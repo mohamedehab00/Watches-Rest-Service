@@ -1,6 +1,9 @@
 package com.rest.watchrestservice.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +13,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -35,4 +36,11 @@ public class Category {
     private LocalDateTime created_at;
     @UpdateTimestamp
     private LocalDateTime updated_at;
+
+/*    @ManyToMany(
+            fetch = FetchType.EAGER,
+            cascade = {
+            CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH
+    })
+    Set<Watch> watches;*/
 }

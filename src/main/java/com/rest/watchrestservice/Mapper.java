@@ -1,18 +1,20 @@
 package com.rest.watchrestservice;
 
 import com.rest.watchrestservice.dto.*;
-import com.rest.watchrestservice.model.Category;
-import com.rest.watchrestservice.model.Customer;
-import com.rest.watchrestservice.model.Watch;
-import com.rest.watchrestservice.model.WatchOrderShipment;
+import com.rest.watchrestservice.model.*;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
 public class Mapper {
     public WatchDto watchToWatchDto(Watch watch){
+        Set<WatchOrderLineDto> orderLines = watch.getOrderLines().stream().map(this::watchOrderLineToWatchOrderLineDto).collect(Collectors.toSet());
+        Set<CategoryInfoDto> categories = watch.getCategories().stream().map(this::categoryToCategoryInfoDto).collect(Collectors.toSet());
+
         return WatchDto
                 .builder()
                 .id(watch.getId())
@@ -21,8 +23,19 @@ public class Mapper {
                 .price(watch.getPrice())
                 .origin(watch.getOrigin())
                 .quantityOnHand(watch.getQuantityOnHand())
-                .orderLines((watch.getOrderLines() != null) ? watch.getOrderLines() : new HashSet<>())
-                .categories((watch.getCategories() != null) ? watch.getCategories() : new HashSet<>())
+                .orderLines(orderLines)
+                .categories(categories)
+                .build();
+    }
+
+    public WatchInfoDto watchToWatchInfoDto(Watch watch){
+        return WatchInfoDto.builder()
+                .id(watch.getId())
+                .model(watch.getModel())
+                .origin(watch.getOrigin())
+                .price(watch.getPrice())
+                .quantityOnHand(watch.getQuantityOnHand())
+                .serialNumber(watch.getSerialNumber())
                 .build();
     }
 
@@ -41,6 +54,8 @@ public class Mapper {
     }
 
     public Watch watchCreationDtoToWatch(WatchCreationDto watchCreationDto){
+        List<UUID> uuids = watchCreationDto.getCategories();
+
         return Watch
                 .builder()
                 .id(null)
@@ -49,20 +64,20 @@ public class Mapper {
                 .price(watchCreationDto.getPrice())
                 .origin(watchCreationDto.getOrigin())
                 .quantityOnHand(watchCreationDto.getQuantityOnHand())
-                .Categories(watchCreationDto.getCategories().stream().map(uuid -> Category.builder().id(uuid).build()).collect(Collectors.toSet()))
+                .categories(uuids.stream().map(uuid -> Category.builder().id(uuid).build()).collect(Collectors.toSet()))
                 .createdAt(null)
                 .updatedAt(null)
                 .build();
     }
 
     public CustomerDto customerToCustomerDto(Customer customer){
+        List<WatchOrderDto> orders = customer.getOrders().stream().map(this::watchOrderToWatchOrderDto).toList();
+
         return CustomerDto
                 .builder()
                 .id(customer.getId())
                 .name(customer.getName())
-                .version(customer.getVersion())
-                .orders(customer.getOrders())
-                .orders(customer.getOrders())
+                .orders(orders)
                 .build();
     }
 
@@ -71,7 +86,7 @@ public class Mapper {
                 .builder()
                 .id(customerDto.getId())
                 .name(customerDto.getName())
-                .version(customerDto.getVersion())
+                .version(null)
                 .addedAt(null)
                 .updatedAt(null)
                 .build();
@@ -104,7 +119,36 @@ public class Mapper {
                 .builder()
                 .id(category.getId())
                 .description(category.getDescription())
-                .version(category.getVersion())
+                .build();
+    }
+
+    CategoryInfoDto categoryToCategoryInfoDto(Category category){
+        return CategoryInfoDto.builder()
+                .id(category.getId())
+                .description(category.getDescription())
+                .build();
+    }
+
+    public WatchOrderDto watchOrderToWatchOrderDto(WatchOrder order){
+        WatchOrderShipmentInfoDto orderShipmentDto = watchOrderShipmentToWatchOrderShipmentInfoDto(order.getOrderShipment());
+
+        Set<WatchOrderLineDto> watchOrderLineDtos = order.getOrderLines().stream().map(this::watchOrderLineToWatchOrderLineDto).collect(Collectors.toSet());
+
+        return WatchOrderDto.builder()
+                .id(order.getId())
+                .customer_id(order.getCustomer_id())
+                .orderShipment(orderShipmentDto)
+                .orderLines(watchOrderLineDtos)
+                .updatedAt(order.getUpdatedAt())
+                .build();
+    }
+
+    public WatchOrderLineDto watchOrderLineToWatchOrderLineDto(WatchOrderLine watchOrderLine){
+        return WatchOrderLineDto.builder()
+                .id(watchOrderLine.getId())
+                .watch_id(watchOrderLine.getWatch_id())
+                .watch_order_id(watchOrderLine.getWatch_order_id())
+                .updatedAt(watchOrderLine.getUpdatedAt())
                 .build();
     }
 
@@ -119,10 +163,28 @@ public class Mapper {
     }
 
     public WatchOrderShipmentDto watchOrderShipmentToWatchOrderShipmentDto(WatchOrderShipment dto){
+        WatchOrderInfoDto orderDto = watchOrderToWatchOrderInfoDto(dto.getOrder());
+
         return WatchOrderShipmentDto.builder()
                 .id(dto.getId())
                 .tracking_number(dto.getTracking_number())
-                .version(dto.getVersion())
+                .order(orderDto)
+                .build();
+    }
+
+    public WatchOrderInfoDto watchOrderToWatchOrderInfoDto(WatchOrder order){
+        return WatchOrderInfoDto.builder()
+                .id(order.getId())
+                .customer_id(order.getCustomer_id())
+                .orderLines(order.getOrderLines().stream().map(this::watchOrderLineToWatchOrderLineDto).collect(Collectors.toSet()))
+                .updatedAt(order.getUpdatedAt())
+                .build();
+    }
+
+    public WatchOrderShipmentInfoDto watchOrderShipmentToWatchOrderShipmentInfoDto(WatchOrderShipment shipment){
+        return WatchOrderShipmentInfoDto.builder()
+                .id(shipment.getId())
+                .tracking_number(shipment.getTracking_number())
                 .build();
     }
 }
